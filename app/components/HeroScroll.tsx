@@ -1,0 +1,139 @@
+// ... imports
+import { useScroll, useTransform, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { useImagePreloader } from "@/hooks/use-image-preloader";
+import { cn } from "@/frontend-design/lib/utils";
+
+export default function HeroScroll() {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+
+    // Sequence 1 has 125 frames
+    const frameCount = 125;
+    const { images, loaded } = useImagePreloader(
+        "/sequence-1",
+        "ezgif-frame-",
+        frameCount,
+        "jpg"
+    );
+
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end end"],
+    });
+
+    const currentIndex = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [0, frameCount - 1]
+    );
+
+    // Text Animations
+    const textY = useTransform(scrollYProgress, [0, 0.2], ["0vh", "-42vh"]);
+    const textScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.4]); // Decreased more
+    const textColor = useTransform(scrollYProgress, [0, 0.2], ["#dc2626", "#ffffff"]);
+    const subtitleOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            const ctx = canvasRef.current.getContext("2d");
+            setContext(ctx);
+        }
+    }, []);
+
+    const renderFrame = (index: number) => {
+        if (!context || !loaded || !images[index]) return;
+
+        // Clear canvas
+        context.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
+
+        // Draw image to cover canvas while maintaining aspect ratio
+        const img = images[index];
+        const canvas = canvasRef.current!;
+
+        const hRatio = canvas.width / img.width;
+        const vRatio = canvas.height / img.height;
+        const ratio = Math.max(hRatio, vRatio);
+
+        const centerShift_x = (canvas.width - img.width * ratio) / 2;
+        const centerShift_y = (canvas.height - img.height * ratio) / 2;
+
+        context.drawImage(
+            img,
+            0,
+            0,
+            img.width,
+            img.height,
+            centerShift_x,
+            centerShift_y,
+            img.width * ratio,
+            img.height * ratio
+        );
+    };
+
+    useEffect(() => {
+        const unsubscribe = currentIndex.on("change", (latest) => {
+            renderFrame(Math.round(latest));
+        });
+
+        // Initial render
+        if (loaded && images.length > 0) {
+            // Resize canvas to window size
+            if (canvasRef.current) {
+                canvasRef.current.width = window.innerWidth;
+                canvasRef.current.height = window.innerHeight;
+            }
+            renderFrame(0);
+        }
+
+        const handleResize = () => {
+            if (canvasRef.current) {
+                canvasRef.current.width = window.innerWidth;
+                canvasRef.current.height = window.innerHeight;
+                renderFrame(Math.round(currentIndex.get()));
+            }
+        }
+
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            unsubscribe();
+            window.removeEventListener("resize", handleResize);
+        }
+    }, [currentIndex, loaded, context, images]);
+
+
+    return (
+        <div ref={containerRef} className="h-[400vh] relative bg-black">
+            <div className="sticky top-0 h-screen w-full overflow-hidden">
+                <canvas
+                    ref={canvasRef}
+                    className="w-full h-full object-cover"
+                />
+
+                {/* Overlay Content */}
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+                    <motion.h1
+                        style={{ y: textY, scale: textScale, color: textColor }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                        className="text-6xl md:text-9xl font-bold text-red-600 tracking-tighter"
+                    >
+                        KSRTC
+                    </motion.h1>
+                    <motion.p
+                        style={{ opacity: subtitleOpacity }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1, delay: 1 }}
+                        className="mt-4 text-xl md:text-2xl text-white/80 tracking-widest uppercase font-light"
+                    >
+                        Luxury Travel Redefined
+                    </motion.p>
+                </div>
+            </div>
+        </div>
+    );
+}

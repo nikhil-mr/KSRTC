@@ -1,11 +1,24 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { AnimatePresence } from "framer-motion";
 import HeroScroll from "./components/HeroScroll";
 import BusMorph from "./components/BusMorph";
 import Map from "./components/Map";
 import SmoothScroll from "./components/SmoothScroll";
+import LoadingScreen from "./components/LoadingScreen";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <main className="w-full bg-black min-h-screen">
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <LoadingScreen onComplete={() => setIsLoading(false)} />
+        )}
+      </AnimatePresence>
+
       <SmoothScroll />
       <HeroScroll />
       <BusMorph />
