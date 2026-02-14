@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const navItems = [
     "About Us",
@@ -13,19 +13,44 @@ const navItems = [
 ];
 
 export default function Navbar() {
-    return (
-        <nav className="fixed top-8 left-0 w-full px-10 z-50 flex justify-between items-center text-white">
-            <div className="flex gap-8 items-center">
-                {navItems.map((item, index) => (
-                    <NavItem key={index} text={item} />
-                ))}
-            </div>
+    const { scrollY } = useScroll();
 
-            <div className="flex gap-6 font-medium text-sm tracking-wide">
-                <span>info@ksrtc.in</span>
-                <span>+91 999 999 9999</span>
-            </div>
-        </nav>
+    // Animation transforms
+    const top = useTransform(scrollY, [0, 300], ["calc(50% - 80px)", "2rem"]);
+    const y = useTransform(scrollY, [0, 300], ["-400%", "0%"]);
+    const fontSize = useTransform(scrollY, [0, 300], ["8rem", "1.5rem"]);
+    const fontWeight = useTransform(scrollY, [0, 300], [700, 600]);
+    const letterSpacing = useTransform(scrollY, [0, 300], ["-0.05em", "0.05em"]);
+
+    return (
+        <>
+            <motion.h1
+                style={{
+                    top,
+                    y,
+                    x: "-50%",
+                    fontSize,
+                    fontWeight,
+                    letterSpacing
+                }}
+                className="fixed left-1/2 z-50 text-white leading-none whitespace-nowrap pointer-events-none"
+            >
+                KSRTC
+            </motion.h1 >
+
+            <nav className="fixed top-8 left-0 w-full px-10 z-50 flex justify-between items-center text-white">
+                <div className="flex gap-8 items-center">
+                    {navItems.map((item, index) => (
+                        <NavItem key={index} text={item} />
+                    ))}
+                </div>
+
+                <div className="flex gap-6 font-medium text-sm tracking-wide">
+                    <span>info@ksrtc.in</span>
+                    <span>+91 999 999 9999</span>
+                </div>
+            </nav>
+        </>
     );
 }
 

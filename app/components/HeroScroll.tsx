@@ -30,9 +30,6 @@ export default function HeroScroll() {
     );
 
     // Text Animations
-    const textY = useTransform(scrollYProgress, [0, 0.2], ["0vh", "-42vh"]);
-    const textScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.4]); // Decreased more
-    const textColor = useTransform(scrollYProgress, [0, 0.2], ["#dc2626", "#ffffff"]);
     const subtitleOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
     useEffect(() => {
@@ -114,15 +111,7 @@ export default function HeroScroll() {
 
                 {/* Overlay Content */}
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
-                    <motion.h1
-                        style={{ y: textY, scale: textScale, color: textColor }}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 1, delay: 0.5 }}
-                        className="text-6xl md:text-9xl font-bold text-red-600 tracking-tighter"
-                    >
-                        KSRTC
-                    </motion.h1>
+
                     <motion.p
                         style={{ opacity: subtitleOpacity }}
                         initial={{ opacity: 0 }}
