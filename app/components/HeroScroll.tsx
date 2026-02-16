@@ -4,6 +4,7 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { cn } from "@/frontend-design/lib/utils";
+import { useMotionValueEvent } from "framer-motion";
 
 export default function HeroScroll() {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -42,6 +43,28 @@ export default function HeroScroll() {
     const fadeOutStart = 65 / (frameCount - 1);
     const fadeOutEnd = 75 / (frameCount - 1);
     const textOpacity = useTransform(scrollYProgress, [fadeOutStart, fadeOutEnd], [1, 0]);
+
+    // Text animation for KSRTC description
+    // Start appearing from bottom at frame 50, reach final position at frame 80
+    const textEntryStart = 50 / (frameCount - 1);
+    const textEntryEnd = 80 / (frameCount - 1);
+
+    const textBottom = useTransform(
+        scrollYProgress,
+        [0, textEntryStart, textEntryEnd, 1],
+        ["-25%", "-25%", "10%", "10%"]
+    );
+
+    const descriptionText = "Kerala State Road Transport Corporation (KSRTC) connects Kerala with thousands of daily services across cities and rural regions. Trusted by millions, we deliver safe, reliable, and affordable journeys—on time, every time.";
+    const [displayText, setDisplayText] = useState("");
+
+    // Typing animation starts AFTER text reaches position (frame 80) and finishes at frame 110
+    const typingEnd = 110 / (frameCount - 1);
+    const characterCount = useTransform(scrollYProgress, [textEntryEnd, typingEnd], [0, descriptionText.length]);
+
+    useMotionValueEvent(characterCount, "change", (latest) => {
+        setDisplayText(descriptionText.slice(0, Math.round(latest)));
+    });
 
 
 
@@ -166,13 +189,26 @@ export default function HeroScroll() {
                     </motion.div>
 
                     {/* Static Text - Left Aligned, Full Width, Bottom Positioned */}
-                    <div className="absolute bottom-[-25%] left-0 w-full px-8 z-20 pointer-events-none">
+                    <motion.div
+                        style={{ bottom: textBottom }}
+                        className="absolute left-0 w-full px-8 z-20 pointer-events-none"
+                    >
                         <div className="flex flex-col items-start space-y-4 text-left w-full">
-                            <p className="text-2xl md:text-3xl lg:text-4xl text-white/90 font-bold tracking-wide max-w-[95%] leading-tight">
-                                Kerala State Road Transport Corporation (KSRTC) connects Kerala with thousands of daily services across cities and rural regions. Trusted by millions, we deliver safe, reliable, and affordable journeys—on time, every time.
-                            </p>
+                            {/* Typewriter Effect Container */}
+                            <div className="relative text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide max-w-[95%] leading-tight min-h-[120px]">
+                                {/* Ghost Text (Shadow) */}
+                                <p className="absolute top-0 left-0 text-white/20 select-none">
+                                    {descriptionText}
+                                </p>
+
+                                {/* Typed Text (Fill) */}
+                                <p className="relative z-10 text-white/90">
+                                    {displayText}
+                                    <span className="inline-block w-1 h-[1em] bg-white/90 ml-1 align-middle animate-pulse" />
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </motion.div>
 
                 </div>
             </div>
