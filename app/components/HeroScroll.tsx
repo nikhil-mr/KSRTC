@@ -1,5 +1,5 @@
 // ... imports
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, cubicBezier } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
@@ -38,6 +38,12 @@ export default function HeroScroll() {
     const textScale = useTransform(scrollYProgress, [0, textAnimationEnd], [1, 3.5]);
     const textX = useTransform(scrollYProgress, [0, textAnimationEnd], [0, 1200]); // Move right
     const textY = useTransform(scrollYProgress, [0, textAnimationEnd], [0, -400]); // Move up
+    // Fade out existing text: Start fading at frame 65 (0.52), fully invisible by frame 75 (0.6)
+    const fadeOutStart = 65 / (frameCount - 1);
+    const fadeOutEnd = 75 / (frameCount - 1);
+    const textOpacity = useTransform(scrollYProgress, [fadeOutStart, fadeOutEnd], [1, 0]);
+
+
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -128,6 +134,7 @@ export default function HeroScroll() {
                             scale: textScale,
                             x: textX,
                             y: textY,
+                            opacity: textOpacity, // Fade out existing text
                         }}
                         className="absolute bottom-[15%] right-[10%] text-white text-right flex flex-col items-end"
                     >
@@ -157,6 +164,15 @@ export default function HeroScroll() {
                             </div>
                         </div>
                     </motion.div>
+
+                    {/* Static Text - Left Aligned, Full Width, Bottom Positioned */}
+                    <div className="absolute bottom-[-25%] left-0 w-full px-8 z-20 pointer-events-none">
+                        <div className="flex flex-col items-start space-y-4 text-left w-full">
+                            <p className="text-2xl md:text-3xl lg:text-4xl text-white/90 font-bold tracking-wide max-w-[95%] leading-tight">
+                                Kerala State Road Transport Corporation (KSRTC) connects Kerala with thousands of daily services across cities and rural regions. Trusted by millions, we deliver safe, reliable, and affordable journeys—on time, every time.
+                            </p>
+                        </div>
+                    </div>
 
                 </div>
             </div>

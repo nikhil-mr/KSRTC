@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import HeroScroll from "./components/HeroScroll";
 import BusMorph from "./components/BusMorph";
 import Map from "./components/Map";
-import SmoothScroll from "./components/SmoothScroll";
+
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 import BookNowButton from "./components/BookNowButton";
@@ -24,7 +24,7 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      <SmoothScroll />
+
       <HeroScroll />
       <BusMorph />
       <Map />
