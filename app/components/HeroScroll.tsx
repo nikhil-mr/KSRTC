@@ -31,7 +31,13 @@ export default function HeroScroll() {
     );
 
     // Text Animations
-    const subtitleOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+    // ezgif-frame-070.jpg corresponds to index 69 (0-based indexing)
+    const targetFrame = 124; // Extended to end of sequence to decrease speed
+    const textAnimationEnd = targetFrame / (frameCount - 1);
+
+    const textScale = useTransform(scrollYProgress, [0, textAnimationEnd], [1, 3.5]);
+    const textX = useTransform(scrollYProgress, [0, textAnimationEnd], [0, 1200]); // Move right
+    const textY = useTransform(scrollYProgress, [0, textAnimationEnd], [0, -400]); // Move up
 
     useEffect(() => {
         if (canvasRef.current) {
@@ -118,7 +124,11 @@ export default function HeroScroll() {
 
                     {/* Bottom Right Quadrant - Center */}
                     <motion.div
-                        style={{ opacity: subtitleOpacity }}
+                        style={{
+                            scale: textScale,
+                            x: textX,
+                            y: textY,
+                        }}
                         className="absolute bottom-[15%] right-[10%] text-white text-right flex flex-col items-end"
                     >
                         <h2 className="text-4xl md:text-6xl font-light leading-none tracking-tight mb-4">
