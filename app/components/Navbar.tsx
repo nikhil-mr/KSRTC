@@ -45,7 +45,7 @@ export default function Navbar() {
                     ))}
                 </div>
 
-                <div className="flex gap-6 font-medium text-sm tracking-wide">
+                <div className="flex gap-6 font-bold text-sm tracking-wide">
                     <span>info@ksrtc.in</span>
                     <span>+91 999 999 9999</span>
                 </div>
@@ -57,7 +57,7 @@ export default function Navbar() {
 const NavItem = ({ text }: { text: string }) => {
     return (
         <motion.div
-            className="relative cursor-pointer overflow-hidden font-medium text-sm tracking-wide"
+            className="relative cursor-pointer overflow-hidden font-bold text-sm tracking-wide"
             initial="initial"
             whileHover="hovered"
         >

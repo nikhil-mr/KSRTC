@@ -8,6 +8,7 @@ import Map from "./components/Map";
 import SmoothScroll from "./components/SmoothScroll";
 import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
+import BookNowButton from "./components/BookNowButton";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,6 +16,7 @@ export default function Home() {
   return (
     <main className="w-full bg-black min-h-screen">
       <Navbar />
+      <BookNowButton />
 
       <AnimatePresence mode="wait">
         {isLoading && (

@@ -116,3 +116,71 @@ html.lenis body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
+
+/* Book Now button special effects */
+.book-now-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
+  background-color: white;
+  color: black;
+  border-radius: 9999px; /* Full pill shape */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  height: 3.5rem;
+}
+
+/* subtle lift and shadow on hover/focus */
+.book-now-btn:focus,
+.book-now-btn:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15), 0 2px 8px rgba(255, 255, 255, 0.1);
+  background-color: white; /* Ensure it stays white */
+}
+
+/* animated gradient sweep */
+.book-now-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0.12) 10%, rgba(0,0,0,0.02) 30%, rgba(0,0,0,0) 100%);
+  transform: translateX(-110%) skewX(-10deg);
+  transition: transform 600ms cubic-bezier(.2,.9,.2,1), opacity 300ms;
+  opacity: 0;
+  mix-blend-mode: overlay;
+}
+
+/* reveal sweep on hover (also keyboard focus-visible) */
+.book-now-btn:hover::before,
+.book-now-btn:focus::before,
+.book-now-btn:focus-visible::before {
+  transform: translateX(110%) skewX(-10deg);
+  opacity: 1;
+}
+
+/* pulsing glow ring for accessible focus */
+.book-now-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.3), 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* micro-interaction for the arrow icon */
+.book-now-btn .icon {
+  display: inline-flex;
+  transform: translateX(0);
+  transition: transform 220ms cubic-bezier(.2,.9,.2,1);
+}
+
+.book-now-btn:hover .icon {
+    transform: translateX(4px);
+}
+
+/* smoother behavior for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .book-now-btn,
+  .book-now-btn::before,
+  .book-now-btn .icon {
+    transition: none !important;
+  }
+}

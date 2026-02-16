@@ -1,5 +1,6 @@
 // ... imports
 import { useScroll, useTransform, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useImagePreloader } from "@/hooks/use-image-preloader";
 import { cn } from "@/frontend-design/lib/utils";
@@ -110,17 +111,43 @@ export default function HeroScroll() {
                 />
 
                 {/* Overlay Content */}
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+                {/* Overlay Content */}
+                <div className="absolute inset-0 z-10 pointer-events-none">
 
-                    <motion.p
+
+
+                    {/* Bottom Right Quadrant - Center */}
+                    <motion.div
                         style={{ opacity: subtitleOpacity }}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 1 }}
-                        className="mt-4 text-xl md:text-2xl text-white/80 tracking-widest uppercase font-light"
+                        className="absolute bottom-[15%] right-[10%] text-white text-right flex flex-col items-end"
                     >
-                        Luxury Travel Redefined
-                    </motion.p>
+                        <h2 className="text-4xl md:text-6xl font-light leading-none tracking-tight mb-4">
+                            We are <br /> <span className="font-bold">Destination</span>
+                        </h2>
+
+                        {/* Line Container */}
+                        <div className="w-full min-w-[280px] flex flex-col items-end mb-4">
+                            <div className="h-0.5 bg-white/70 w-full mb-1"></div>
+
+                            <div className="flex w-full justify-between items-start">
+                                {/* Left Side: Scroll Down + Arrows */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">Scroll Down</span>
+                                    <div className="flex flex-col -space-y-2 text-white/80">
+                                        <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
+                                        <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
+                                        <ChevronDown className="w-4 h-4" strokeWidth={1.5} />
+                                    </div>
+                                </div>
+
+                                {/* Right Side: To Start Journey */}
+                                <span className="text-[10px] font-extrabold uppercase tracking-widest text-white/90 leading-none mt-1">
+                                    To Start Journey
+                                </span>
+                            </div>
+                        </div>
+                    </motion.div>
+
                 </div>
             </div>
         </div>
